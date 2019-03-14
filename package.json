@@ -1,0 +1,60 @@
+{
+  "name": "docstore_alpha",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "chai": "^4.2.0",
+    "classnames": "^2.2.6",
+    "dotenv": "^7.0.0",
+    "ganache-cli": "^6.1.8",
+    "jsdom": "^13.0.0",
+    "jsonschema": "^1.2.4",
+    "mocha": "^5.2.0",
+    "pg": "^7.8.2",
+    "pg-format": "^1.0.4",
+    "primeicons": "^1.0.0",
+    "primereact": "^2.0.0-rc.1",
+    "react": "^16.5.2",
+    "react-alert": "^4.0.4",
+    "react-alert-template-basic": "^1.0.0",
+    "react-device-detect": "^1.6.1",
+    "react-dom": "^16.5.2",
+    "react-redux": "^6.0.1",
+    "react-scripts": "2.0.5",
+    "react-transition-group": "^2.5.0",
+    "sha256": "^0.2.0",
+    "truffle": "^4.1.14",
+    "truffle-hdwallet-provider": "^0.0.6",
+    "web3": "^1.0.0-beta.36"
+  },
+  "directories": {
+    "test": "mocha --exit 1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
+    "test-contracts": "mocha 'test/contracts/*.test.js'",
+    "test-react-unit": "mocha --require @babel/register --require ./test/react/helpers.js --require ./test/react/dom.js 'src/**/*.spec.js'",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/register": "^7.0.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "gh-pages": "^2.0.1",
+    "ignore-styles": "^5.0.1"
+  }
+}

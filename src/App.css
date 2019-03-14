@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow|Russo+One|Titillium+Web|Viga');
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.Topbar {
+  background-color: #e6ffee;
+  padding-bottom: 0.2%;
+  padding-left: 4%;
+  padding-top: 0.2%;
+  font-size: 250%;
+}
+
+.Topbar-div{
+  display: flex;
+  align-items: center;
+}
+
+.Topbar-text {
+  font-family: 'Russo One', sans-serif;
+  color: #6600ff;
+}
+
+.p-inputgroup{
+  padding:0.3em;
+}
+
+.p-button-raised{
+  margin-top:10px;
+}
+
+.main-div {
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem 2rem;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  margin-top: 1em;
+  background-color: #e6ffee;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+}
+
+.Bodytext-body-div{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2em;
+}
+
+.Bodytext-center{
+  align-items: center;
+  padding-bottom: 1em;
+}
+
+.Bodytext-style-div{
+  background-color: #eff8ff;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+}
+
+.Bodytext-style-eth-div{
+  background-color: #eff8ff;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+}
+
+.Bodytext-top-div{
+  margin-left: 5%;
+}
+
+.Doc-container {
+  display: flex;
+  flex: 2;
+  padding: 1em;
+  margin: 1em;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #eff8ff;
+  margin-bottom: 1vw;
+.header,
+.flex-row {
+  flex: 1 0 100%;
+}
+}
+
+.Form-container {
+  display: flex;
+  flex: 2;
+  padding: 1em;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #eff8ff;
+  margin-bottom: 1vw;
+.header,
+.flex-row {
+  flex: 1 0 100%;
+}
+}
+
+.Form-wrapper {
+  flex: 2;
+  padding: 1em;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eff8ff;
+  margin-bottom: 1vw;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+}
+
+.text-box {
+  padding: 1em;
+  align-items: center;
+  background-color: #eef8ff;
+  margin-bottom: 1vw;
+}
+
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
