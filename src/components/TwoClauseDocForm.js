@@ -49,10 +49,10 @@ class DocForm extends React.Component{
                     <h2>Categories</h2>
                     <h4>Primary Category</h4>
                     <MultiSelect id = "categories" optionLabel="name" value={this.props.selectedCategories}
-                                 options={this.props.categories} onChange={this.props.handleFormChange}
+                                 options={this.props.categories} onChange={(e) => this.props.handleFormChange(e, "double")}
                                  style={{minWidth:'12em'}} placeholder="Choose"/>
                     <h4>Other Categories</h4>
-                    <InputTextarea id ="othercategories" twoClause={true} rows={1} cols={30} onChange={this.props.handleFormChange} value={this.props.otherCategories} autoResize={true} />
+                    <InputTextarea id ="usercategories" twoClause={true} rows={1} cols={30} onChange={(e) => this.props.handleFormChange(e, "double")} value={this.props.userCategories} autoResize={true} />
                 </div>
                 {buttonSet}
             </div>

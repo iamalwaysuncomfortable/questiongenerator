@@ -38,6 +38,7 @@ class DocForm extends React.Component{
             <div className = "Form-wrapper">
                 <div className="Form-container">
                     <div className="text-box">
+                        <h4>Noun Set</h4>
                         <InputTextarea id ="nounbox" rows={5} cols={30} onChange={this.props.handleFormChange} value={this.props.singleNouns} autoResize={true} />
                     </div>
 
@@ -50,10 +51,10 @@ class DocForm extends React.Component{
                     <h2>Categories</h2>
                     <h4>Primary Category</h4>
                     <MultiSelect id = "categories" optionLabel="name" value={this.props.selectedCategories}
-                                 options={this.props.categories} onChange={this.props.handleFormChange}
+                                 options={this.props.categories} onChange={(e) => this.props.handleFormChange(e, "single")}
                                  style={{minWidth:'12em'}} placeholder="Choose"/>
                     <h4>Other Categories</h4>
-                    <InputTextarea id ="othercategories" rows={1} cols={30} onChange={this.props.handleFormChange} value={this.props.otherCategories} autoResize={true} />
+                    <InputTextarea id ="usercategories" rows={1} cols={30} onChange={(e) => this.props.handleFormChange(e, "single")} value={this.props.userCategories} autoResize={true} />
                 </div>
                 {buttonSet}
             </div>

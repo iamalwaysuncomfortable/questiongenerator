@@ -1,7 +1,7 @@
 const {checksum} = require('../utils/lib');
 const pg = require('pg');
 const format = require('pg-format');
-const insertQuery = "INSERT INTO questionsasked (qhash, question, asked) VALUES %L ON CONFLICT DO NOTHING";
+const insertQuery = "INSERT INTO questionsasked (qhash, question, asked, categories) VALUES %L ON CONFLICT DO NOTHING";
 const pool = new pg.Pool();
 
 
@@ -31,7 +31,7 @@ async function executeQuery(query){
 async function stageNewQuestions(questions) {
     let values = [];
     for (let i = 0; i < questions.length; i++){
-        values.push(checksum(questions[i]), questions[i], 'f');
+        values.push(checksum(questions[i][0]), questions[i][0], 'f', '{' + String(questions[1]) + '}');
     }
     let query = format(insertQuery, values);
     let queryResult = await executeQuery(query);

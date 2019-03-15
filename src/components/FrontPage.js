@@ -8,7 +8,7 @@ import React from "react";
 import {Button} from "primereact/button";
 import TwoClauseDocForm from "./TwoClauseDocForm";
 import {InputTextarea} from "primereact/inputtextarea";
-let {singleNounPhraseGenerator, doubleNounPhraseGenerator} = require('../utils/lib');
+let {singleNounPhraseGenerator, doubleNounPhraseGenerator, categorizer, writeResultsToDB} = require('../utils/lib');
 const sha256 = require('sha256');
 const initialCategories = [
     {name: "Gossip", value: "Gossip"},
@@ -30,19 +30,19 @@ const initialCategories = [
     {name: "Consumer Products", value: "Consumer Products"},
     {name: "Language", value: "Language"}];
 
-class Web3Gateway extends React.Component{
+class FrontPage extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {singleNouns:'', singleSentenceClauses:[], doubleNouns:["",""], doubleSentenceClauses: [], questions:"",
-            selectedCategories:[],otherCategories:""};
+            singleSelectedCategories:[],doubleSelectedCategories:[],singleUserCategories:"", doubleUserCategories:""};
         this.tick = this.tick.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.showSuccess = this.showSuccess.bind(this);
         this.showError = this.showError.bind(this);
         this.addPair = this.addPair.bind(this);
         this.submitPhraseCombos = this.submitPhraseCombos.bind(this);
-
+        this.submitQuestions = this.submitQuestions.bind(this);
     }
 
     showSuccess(message) {
@@ -70,7 +70,12 @@ class Web3Gateway extends React.Component{
                 }
                 break;
             case "categories":
-                this.setState({selectedCategories: e.value});
+                if (index === "single") {
+                    this.setState({singleSelectedCategories: e.value});
+                }
+                else if (index === "double"){
+                    this.setState({doubleSelectedCategories: e.value});
+                }
                 break;
             case "anterior":
                 if (nouns===1) {
@@ -103,7 +108,14 @@ class Web3Gateway extends React.Component{
                     this.setState({doubleSentenceClauses: clauses});
                 }
                 break;
-
+            case "usercategories":
+                if (index === "single") {
+                    this.setState({singleUserCategories: e.target.value});
+                }
+                else if (index === "double") {
+                    this.setState({doubleUserCategories: e.target.value});
+                }
+                break;
 
         }
     }
@@ -122,20 +134,30 @@ class Web3Gateway extends React.Component{
             if (questions.includes(phrases[i])) {
                 //Do nothing
             } else {
+                phrases[i] = (nouns === 1) ?
+                    categorizer(phrases[i], this.state.singleSelectedCategories, this.state.singleUserCategories) :
+                    categorizer(phrases[i], this.state.doubleSelectedCategories, this.state.doubleUserCategories);
+
                 questions.push(phrases[i]);
             }
         }
 
-        questions = questions.join("\n");
-        if (questions.substr(2) == "\n"){
-            questions = questions.substr(1,questions.length-1);
+        if (questions[0] === ""){
+            questions.shift();
         }
+
+        questions = questions.join("\n");
+
 
         this.setState({questions:questions});
         if (nouns === 1){
-            this.setState({singleSentenceClauses:[]})
+            this.setState({singleSentenceClauses:[]});
+            this.setState({singleSelectedCategories:[]});
+            this.setState({singleUserCategories:""});
         } else if (nouns === 2){
-            this.setState({doubleSentenceClauses:[]})
+            this.setState({doubleSentenceClauses:[]});
+            this.setState({doubleSelectedCategories:[]});
+            this.setState({doubleUserCategories:""});
         }
     }
 
@@ -161,6 +183,12 @@ class Web3Gateway extends React.Component{
     componentWillUnmount() {
     }
 
+    async submitQuestions(e){
+        let questions = this.state.questions;
+        await writeResultsToDB(questions);
+
+    }
+
     ///Tick function checks up on changes in environment and updates state to reflect that.\
     async tick(){
     }
@@ -168,7 +196,7 @@ class Web3Gateway extends React.Component{
     render(){
         let buttonSet = (
             <div>
-                <Button type="submit" label="Submit Phrase Combo" className="p-button-raised" onClick={this.props.verifyDoc}  id="verify"/>
+                <Button type="submit" label="Submit Phrase Combo" className="p-button-raised" onClick={this.submitQuestions}  id="verify"/>
             </div>
         );
         let value = JSON.stringify(this.state);
@@ -180,20 +208,22 @@ class Web3Gateway extends React.Component{
                     <OneClauseDocForm singleNouns={this.state.singleNouns} singleSentenceClauses={this.state.singleSentenceClauses}
                                       handleFormChange = {this.handleFormChange} addPair = {this.addPair}
                                       submitPhraseCombos = {this.submitPhraseCombos} categories = {initialCategories}
-                                      selectedCategories = {this.state.selectedCategories}/>
+                                      selectedCategories = {this.state.singleSelectedCategories}
+                                      userCategories={this.state.singleUserCategories} />
                     <TwoClauseDocForm doubleNouns={this.state.doubleNouns} doubleSentenceClauses={this.state.doubleSentenceClauses}
                                       handleFormChange = {this.handleFormChange} addPair = {this.addPair}
                                       submitPhraseCombos = {this.submitPhraseCombos} categories = {initialCategories}
-                                      selectedCategories = {this.state.selectedCategories}/>
+                                      selectedCategories = {this.state.doubleSelectedCategories}
+                                      userCategories={this.state.doubleUserCategories}/>
                     <Messages ref={(el) => this.messages = el} />
                     <h2>Phrase List</h2>
                     <div className="Bodytext-center">
                        {buttonSet}
                     </div>
-                    <InputTextarea id ="questionsbox" rows={5} cols={30} value={this.state.questions} onChange={this.handleFormChange} autoResize={true} />
+                    <InputTextarea id ="questionsbox" rows={5} cols={80} value={this.state.questions} onChange={this.handleFormChange} autoResize={true} />
                 </div>
             );
         }
 }
 
-export default Web3Gateway;
+export default FrontPage;
