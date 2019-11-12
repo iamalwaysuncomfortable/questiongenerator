@@ -8,7 +8,8 @@ import React from "react";
 import {Button} from "primereact/button";
 import TwoClauseDocForm from "./TwoClauseDocForm";
 import {InputTextarea} from "primereact/inputtextarea";
-let {singleNounPhraseGenerator, doubleNounPhraseGenerator, categorizer, writeResultsToDB} = require('../utils/lib');
+const axios = require('axios');
+const {singleNounPhraseGenerator, doubleNounPhraseGenerator, categorizer, prepareDataForDBWrite} = require('../utils/lib');
 const sha256 = require('sha256');
 const initialCategories = [
     {name: "Gossip", value: "Gossip"},
@@ -34,13 +35,15 @@ class FrontPage extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state = {singleNouns:'', singleSentenceClauses:[], doubleNouns:["",""], doubleSentenceClauses: [], questions:"",
-            singleSelectedCategories:[],doubleSelectedCategories:[],singleUserCategories:"", doubleUserCategories:""};
+        this.state = {singleNouns:'', singleSentenceClauses:[], doubleNouns:["",""],
+            doubleSentenceClauses: [], questions:"", singleSelectedCategories:[],
+            doubleSelectedCategories:[],singleUserCategories:"", doubleUserCategories:""};
         this.tick = this.tick.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.showSuccess = this.showSuccess.bind(this);
         this.showError = this.showError.bind(this);
         this.addPair = this.addPair.bind(this);
+        this.deletePair = this.deletePair.bind(this);
         this.submitPhraseCombos = this.submitPhraseCombos.bind(this);
         this.submitQuestions = this.submitQuestions.bind(this);
     }
@@ -120,18 +123,26 @@ class FrontPage extends React.Component{
         }
     }
 
-
     submitPhraseCombos(e, type, nouns){
         let questions = this.state.questions;
-
-        let phrases = (nouns === 2)?
+        if (nouns === 2 && ((this.state.doubleNouns[0] === "" || this.state.doubleNouns[1] === "") || this.state.doubleSentenceClauses.length === 0)){
+            return
+        } else if (nouns === 1 && (this.state.singleNouns === "" || this.state.singleSentenceClauses.length === 0)){
+            return
+        }
+        let phrases = (nouns === 2) ?
             doubleNounPhraseGenerator(this.state.doubleNouns, this.state.doubleSentenceClauses, type) :
             singleNounPhraseGenerator(this.state.singleNouns, this.state.singleSentenceClauses, type);
 
         questions = questions.split('\n');
+        let questionsMinusCategories = [];
+        for (let i = 0; i < questions.length; i++){
+            let q = questions[0].split(" [Categories]:");
+            questionsMinusCategories.push(q[0]);
+        }
 
         for (let i = 0; i < phrases.length; i++){
-            if (questions.includes(phrases[i])) {
+            if (questionsMinusCategories.includes(phrases[i])) {
                 //Do nothing
             } else {
                 phrases[i] = (nouns === 1) ?
@@ -176,17 +187,31 @@ class FrontPage extends React.Component{
 
     }
 
-    async componentDidMount() {
+    deletePair(e, type){
+        console.log(type);
+        if (type === "oneClause") {
+            let clauses = this.state.singleSentenceClauses;
+            clauses.pop();
+            this.setState({singleSentenceClauses: clauses});
+        }
+        if (type === "twoClause") {
+            let clauses = this.state.doubleSentenceClauses;
+            clauses.pop();
+            this.setState({doubleSentenceClauses: clauses});
+        }
 
-    }
-
-    componentWillUnmount() {
     }
 
     async submitQuestions(e){
+        if (this.state.questions === ""){return}
         let questions = this.state.questions;
-        await writeResultsToDB(questions);
-
+        let payload = await prepareDataForDBWrite(questions);
+        console.log(payload);
+        let result = await axios.post('http://0.0.0.0:3002/api/updateRecords',payload);
+        console.log(result.data);
+        if (result.data === "success"){
+            this.setState({questions:""});
+        }
     }
 
     ///Tick function checks up on changes in environment and updates state to reflect that.\
@@ -209,18 +234,19 @@ class FrontPage extends React.Component{
                                       handleFormChange = {this.handleFormChange} addPair = {this.addPair}
                                       submitPhraseCombos = {this.submitPhraseCombos} categories = {initialCategories}
                                       selectedCategories = {this.state.singleSelectedCategories}
-                                      userCategories={this.state.singleUserCategories} />
+                                      userCategories={this.state.singleUserCategories} deletePair = {this.deletePair}/>
                     <TwoClauseDocForm doubleNouns={this.state.doubleNouns} doubleSentenceClauses={this.state.doubleSentenceClauses}
                                       handleFormChange = {this.handleFormChange} addPair = {this.addPair}
                                       submitPhraseCombos = {this.submitPhraseCombos} categories = {initialCategories}
                                       selectedCategories = {this.state.doubleSelectedCategories}
-                                      userCategories={this.state.doubleUserCategories}/>
+                                      userCategories={this.state.doubleUserCategories} deletePair = {this.deletePair}/>
                     <Messages ref={(el) => this.messages = el} />
                     <h2>Phrase List</h2>
                     <div className="Bodytext-center">
                        {buttonSet}
                     </div>
-                    <InputTextarea id ="questionsbox" rows={5} cols={80} value={this.state.questions} onChange={this.handleFormChange} autoResize={true} />
+                    <InputTextarea id ="questionsbox" rows={5} cols={80} value={this.state.questions}
+                                   onChange={this.handleFormChange} autoResize={true} />
                 </div>
             );
         }
