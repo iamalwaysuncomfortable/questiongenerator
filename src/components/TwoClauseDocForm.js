@@ -43,6 +43,7 @@ class DocForm extends React.Component{
                     <div>
                         <Button type="submit" label="Add Phrase Pair" className="p-button-raised" onClick={(e) => this.props.addPair(e,"twoClause")}  id="addpair"/>
                         {this.props.doubleSentenceClauses.map((clause,i) => <InputFields key={i.toString()} index = {i} anterior={clause[0]} posterior={clause[1]} tertiary={clause[2]} handleFormChange={this.props.handleFormChange} nouns={2}/>)}
+                        <Button type="delete" label="Delete Pair" className="p-button-raised" onClick={(e) => this.props.deletePair(e,"twoClause")}  id="deletepair" />
                     </div>
                 </div>
                 <div>
