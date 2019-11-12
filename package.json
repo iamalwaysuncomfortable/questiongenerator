@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "chai": "^4.2.0",
     "classnames": "^2.2.6",
     "dotenv": "^7.0.0",
@@ -31,7 +32,7 @@
     "test": "mocha --exit 1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
