@@ -45,6 +45,7 @@ class DocForm extends React.Component{
                     <div>
                         <Button type="submit" label="Add Phrase Pair" className="p-button-raised" onClick={(e) => this.props.addPair(e,"oneClause")}  id="addpair"/>
                         {this.props.singleSentenceClauses.map((clause,i) => <InputFields key={i.toString()} index = {i} anterior={clause[0]} posterior={clause[1]} handleFormChange={this.props.handleFormChange} nouns={1} />)}
+                        <Button type="delete" label="Delete Pair" className="p-button-raised" onClick={(e) => this.props.deletePair(e,"oneClause")}  id="deletepair" />
                     </div>
                 </div>
                 <div>
@@ -54,7 +55,9 @@ class DocForm extends React.Component{
                                  options={this.props.categories} onChange={(e) => this.props.handleFormChange(e, "single")}
                                  style={{minWidth:'12em'}} placeholder="Choose"/>
                     <h4>Other Categories</h4>
-                    <InputTextarea id ="usercategories" rows={1} cols={30} onChange={(e) => this.props.handleFormChange(e, "single")} value={this.props.userCategories} autoResize={true} />
+                    <InputTextarea id ="usercategories" rows={1} cols={30}
+                                   onChange={(e) => this.props.handleFormChange(e, "single")}
+                                   value={this.props.userCategories} autoResize={true} />
                 </div>
                 {buttonSet}
             </div>
